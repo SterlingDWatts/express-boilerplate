@@ -20,5 +20,17 @@ app.get("/", (req, res) => {
   res.send("Hello, world!");
 });
 
+// error handling middleware gives short response if in production
+app.use(function errorHandler(error, req, res, next) {
+  let response;
+  if (process.env.NODE_ENV === "production") {
+    response = { error: { message: "server error" } };
+  } else {
+    console.error(error);
+    response = { message: error.message, error };
+  }
+  res.status(500).json(response);
+});
+
 // export the app
 module.exports = app;
